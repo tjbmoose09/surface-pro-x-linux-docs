@@ -77,6 +77,7 @@ run_logged "${SPX_LOG_DIR}/kernel/defconfig.log" \
 
 run_logged "${SPX_LOG_DIR}/kernel/merge-config.log" \
   "${kernel_dir}/scripts/kconfig/merge_config.sh" \
+    -m \
     -O "$SPX_KERNEL_BUILD_DIR" \
     "${SPX_KERNEL_BUILD_DIR}/.config" \
     "$surface_config" \
