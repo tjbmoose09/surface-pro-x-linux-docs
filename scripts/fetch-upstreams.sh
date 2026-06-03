@@ -20,6 +20,7 @@ while [[ $# -gt 0 ]]; do
 Usage: scripts/fetch-upstreams.sh [--only NAME]
 
 Fetches upstream repositories into build/src and writes source manifests.
+Set SPX_GIT_DEPTH=0 to fetch full Git history instead of shallow refs.
 
 Repository names:
   kernel
