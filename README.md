@@ -47,6 +47,10 @@ packaging, image generation, QEMU smoke testing, and physical-device validation.
 ```text
 .
 ├── README.md
+├── config/
+│   ├── project.env
+│   ├── sources.env
+│   └── kernel/
 ├── docs/
 │   ├── upstream-map.md
 │   ├── build-pipeline.md
@@ -55,7 +59,10 @@ packaging, image generation, QEMU smoke testing, and physical-device validation.
 │   ├── fedora-kde.md
 │   ├── ubuntu-kde.md
 │   ├── hardware-validation.md
+│   ├── tooling.md
 │   └── roadmap.md
+├── packaging/
+├── containers/
 ├── scripts/
 │   └── README.md
 ├── tests/
@@ -108,3 +115,19 @@ QEMU cannot validate Surface Pro X hardware behavior without a custom machine
 model. The real tablet is required for SAM, Type Cover, battery, thermal, NVMe,
 Adreno GPU, WiFi/Bluetooth firmware, touch, pen, suspend, LTE, cameras, and
 external display tests.
+
+## Starter Tooling
+
+The repository includes first-pass tools for starting the work:
+
+```sh
+make check-host
+make fetch-upstreams
+scripts/build-kernel.sh --prepare-only
+make kernel
+SPX_WINDOWS_ROOT=/path/to/windows-root make firmware
+make grub
+make qemu-smoke IMAGE=/path/to/aarch64-image.raw
+```
+
+See `docs/tooling.md` for the command guide.

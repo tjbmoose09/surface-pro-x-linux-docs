@@ -1,0 +1,28 @@
+FROM fedora:latest
+
+RUN dnf -y update && \
+    dnf -y install \
+      bash \
+      bc \
+      bison \
+      clang \
+      diffutils \
+      dtc \
+      elfutils-libelf-devel \
+      findutils \
+      flex \
+      gcc \
+      git \
+      jq \
+      make \
+      openssl-devel \
+      python3 \
+      qemu-img \
+      qemu-system-aarch64 \
+      rpm-build \
+      rsync \
+      tar \
+      which && \
+    dnf clean all
+
+WORKDIR /work
