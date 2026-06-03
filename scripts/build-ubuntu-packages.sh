@@ -38,6 +38,7 @@ done
 need_cmd dpkg-deb
 rm -rf "$pkg_dir"
 ensure_dir "${pkg_dir}/DEBIAN" "${pkg_dir}/usr/share/surface-pro-x-linux-docs" "$out_dir"
+chmod 0755 "$pkg_dir" "${pkg_dir}/DEBIAN" "${pkg_dir}/usr" "${pkg_dir}/usr/share" "${pkg_dir}/usr/share/surface-pro-x-linux-docs"
 
 cat > "${pkg_dir}/DEBIAN/control" <<EOF
 Package: surface-pro-x-toolkit
@@ -59,5 +60,9 @@ cp -a "${SPX_REPO_ROOT}/docs" "${pkg_dir}/usr/share/surface-pro-x-linux-docs/"
 cp -a "${SPX_REPO_ROOT}/scripts" "${pkg_dir}/usr/share/surface-pro-x-linux-docs/"
 cp -a "${SPX_REPO_ROOT}/tests" "${pkg_dir}/usr/share/surface-pro-x-linux-docs/"
 
-dpkg-deb --build "$pkg_dir" "${out_dir}/surface-pro-x-toolkit_${version}_all.deb"
+find "$pkg_dir" -type d -exec chmod 0755 {} +
+find "$pkg_dir" -type f -exec chmod 0644 {} +
+find "${pkg_dir}/usr/share/surface-pro-x-linux-docs/scripts" -type f -name '*.sh' -exec chmod 0755 {} +
+
+dpkg-deb --root-owner-group --build "$pkg_dir" "${out_dir}/surface-pro-x-toolkit_${version}_all.deb"
 info "Ubuntu package output is ${out_dir}/surface-pro-x-toolkit_${version}_all.deb"
