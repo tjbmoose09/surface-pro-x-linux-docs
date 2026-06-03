@@ -57,7 +57,7 @@ qemu-smoke:
 
 qemu-iso-smoke:
 	@test -n "$${ISO:-}" || { printf '%s\n' 'ISO=/path/to/aarch64.iso is required'; exit 1; }
-	@scripts/qemu-iso-smoke.sh --iso "$${ISO}"
+	@bash scripts/qemu-iso-smoke.sh --iso "$${ISO}"
 
 hardware-logs:
 	@scripts/collect-hardware-logs.sh
