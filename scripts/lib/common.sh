@@ -70,6 +70,7 @@ clone_or_update() {
   local url="$2"
   local ref="$3"
   local dest="${4:-${SPX_SRC_DIR}/${name}}"
+  local depth="${SPX_GIT_DEPTH:-1}"
 
   need_cmd git
   ensure_dir "$(dirname "$dest")"
@@ -77,14 +78,25 @@ clone_or_update() {
   if [[ -d "${dest}/.git" ]]; then
     info "Updating ${name} in ${dest}"
     git -C "$dest" remote set-url origin "$url"
-    git -C "$dest" fetch --tags origin
   else
     info "Cloning ${name} from ${url}"
-    git clone "$url" "$dest"
+    git init "$dest"
+    git -C "$dest" remote add origin "$url"
   fi
 
   if [[ -n "$ref" ]]; then
-    git -C "$dest" checkout "$ref"
+    if [[ "$depth" == "0" ]]; then
+      git -C "$dest" fetch --tags origin "$ref"
+    else
+      git -C "$dest" fetch --depth "$depth" --no-tags origin "$ref"
+    fi
+    git -C "$dest" checkout --detach FETCH_HEAD
+  elif [[ "$depth" == "0" ]]; then
+    git -C "$dest" fetch --tags origin
+    git -C "$dest" checkout --detach FETCH_HEAD
+  else
+    git -C "$dest" fetch --depth "$depth" --no-tags origin
+    git -C "$dest" checkout --detach FETCH_HEAD
   fi
 
   if [[ -f "${dest}/.gitmodules" ]]; then
