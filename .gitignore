@@ -1,0 +1,29 @@
+# Build output
+build/
+dist/
+out/
+*.img
+*.raw
+*.qcow2
+*.iso
+*.xz
+
+# Firmware and private source material
+firmware/
+windows-root/
+recovery/
+*.mbn
+*.bin
+*.fw
+*.tlv
+*.b[0-9a-f][0-9a-f]
+*.jsn
+
+# Logs may contain identifiers. Commit sanitized excerpts only.
+logs/
+*.log
+
+# Local editor state
+.DS_Store
+*.swp
+*.swo
