@@ -1,6 +1,6 @@
 .PHONY: help check-host docs-check fetch-upstreams kernel firmware validate-firmware \
 	grub boot-tree qemu-smoke hardware-logs fedora-packages ubuntu-packages \
-	fedora-image ubuntu-image container-shell
+	fedora-image ubuntu-image qemu-iso-smoke container-shell
 
 help:
 	@printf '%s\n' 'Surface Pro X Linux docs repo'
@@ -14,6 +14,7 @@ help:
 	@printf '%s\n' '  grub              Build AArch64 GRUB bootaa64.efi'
 	@printf '%s\n' '  boot-tree         Create EFI boot tree; pass DTB=/path/to/file.dtb'
 	@printf '%s\n' '  qemu-smoke        Run generic ARM64 QEMU smoke; pass IMAGE=/path/to/image'
+	@printf '%s\n' '  qemu-iso-smoke    Run generic ARM64 ISO boot smoke; pass ISO=/path/to/file.iso'
 	@printf '%s\n' '  hardware-logs     Collect logs on the physical Surface Pro X'
 	@printf '%s\n' '  fedora-packages   Build starter Fedora toolkit RPM'
 	@printf '%s\n' '  ubuntu-packages   Build starter Ubuntu toolkit DEB'
@@ -53,6 +54,10 @@ boot-tree:
 qemu-smoke:
 	@test -n "$${IMAGE:-}" || { printf '%s\n' 'IMAGE=/path/to/image is required'; exit 1; }
 	@scripts/qemu-smoke.sh --image "$${IMAGE}"
+
+qemu-iso-smoke:
+	@test -n "$${ISO:-}" || { printf '%s\n' 'ISO=/path/to/aarch64.iso is required'; exit 1; }
+	@scripts/qemu-iso-smoke.sh --iso "$${ISO}"
 
 hardware-logs:
 	@scripts/collect-hardware-logs.sh
