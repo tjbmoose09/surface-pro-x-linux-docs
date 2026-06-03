@@ -25,7 +25,13 @@ cp -a %{spx_repo_root}/tests %{buildroot}%{_datadir}/surface-pro-x-linux-docs/
 
 %files
 %license %{_datadir}/surface-pro-x-linux-docs/LICENSE
-%{_datadir}/surface-pro-x-linux-docs
+%dir %{_datadir}/surface-pro-x-linux-docs
+%{_datadir}/surface-pro-x-linux-docs/README.md
+%{_datadir}/surface-pro-x-linux-docs/Makefile
+%{_datadir}/surface-pro-x-linux-docs/config
+%{_datadir}/surface-pro-x-linux-docs/docs
+%{_datadir}/surface-pro-x-linux-docs/scripts
+%{_datadir}/surface-pro-x-linux-docs/tests
 
 %changelog
 * Wed Jun 03 2026 tjbmoose09 <tjbmoose09@users.noreply.github.com> - 0.1.0-1
