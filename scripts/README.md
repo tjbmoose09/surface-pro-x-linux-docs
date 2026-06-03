@@ -16,6 +16,7 @@ Implemented scripts:
 - `make-fedora-image.sh`
 - `make-ubuntu-image.sh`
 - `qemu-smoke.sh`
+- `qemu-iso-smoke.sh`
 - `collect-hardware-logs.sh`
 - `container-shell.sh`
 
