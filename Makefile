@@ -90,23 +90,23 @@ container-shell:
 	@scripts/container-shell.sh
 
 kernel-install-artifacts:
-	@scripts/install-kernel-artifacts.sh
+	@bash scripts/install-kernel-artifacts.sh
 
 # Remaster a Fedora AArch64 live ISO to use the surface kernel.
 # Requires: ISO=/path/to/Fedora-*.aarch64.iso  (must be run as root)
 fedora-live-spx:
 	@test -n "$${ISO:-}" || { printf '%s\n' 'ISO=/path/to/Fedora-aarch64-live.iso is required'; exit 1; }
-	@sudo scripts/remaster-fedora-live.sh --iso "$${ISO}"
+	@sudo bash scripts/remaster-fedora-live.sh --iso "$${ISO}"
 
 arch-spx-image:
 	@if [ -n "$${OUT:-}" ] && [ -n "$${WRITE:-}" ]; then \
-		sudo scripts/build-arch-spx-image.sh --out "$${OUT}" --write "$${WRITE}"; \
+		sudo bash scripts/build-arch-spx-image.sh --out "$${OUT}" --write "$${WRITE}"; \
 	elif [ -n "$${OUT:-}" ]; then \
-		sudo scripts/build-arch-spx-image.sh --out "$${OUT}"; \
+		sudo bash scripts/build-arch-spx-image.sh --out "$${OUT}"; \
 	elif [ -n "$${WRITE:-}" ]; then \
-		sudo scripts/build-arch-spx-image.sh --write "$${WRITE}"; \
+		sudo bash scripts/build-arch-spx-image.sh --write "$${WRITE}"; \
 	else \
-		sudo scripts/build-arch-spx-image.sh; \
+		sudo bash scripts/build-arch-spx-image.sh; \
 	fi
 
 # QEMU smoke test of the remastered surface live ISO
