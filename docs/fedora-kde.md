@@ -1,13 +1,36 @@
 # Fedora KDE Plan
 
-Fedora is the first distro target.
+Fedora is a future distro target, not the active first-boot target.
 
-## Why Fedora First
+The project initially tried Fedora first because Fedora publishes strong ARM64
+images and has good RPM infrastructure. Hardware testing showed that Fedora
+live media adds too much live-boot complexity for first bring-up on Surface Pro
+X. The active target is now Arch Linux ARM until USB root boot is solved.
+
+## Why Fedora Still Matters
 
 - Fedora KDE publishes AArch64 KDE Plasma images.
 - Fedora has strong ARM64 packaging infrastructure.
 - Fedora uses modern kernels and firmware packaging.
 - RPM packaging is a good fit for kernel subpackages.
+
+## Why Fedora Was Deferred
+
+Observed failures on physical Surface Pro X:
+
+- dracut emergency shell
+- `/dev/mapper/live-rw` timeout
+- `/dev/disk/by-label/Fedora-US-Live-44` not found
+- ACPI `i2c_qcom_geni` kernel panic
+- black screen or stalled spinner on several live entries
+
+Determination:
+
+- Fedora live media is not the best place to debug the hardware description.
+- The live overlay stack obscures whether the failure is USB storage, dracut,
+  kernel driver behavior, or ISO assembly.
+- Fedora should resume after the simpler Arch GPT/ext4 USB image can mount its
+  root filesystem on the tablet.
 
 ## Base Image Choices
 
@@ -77,3 +100,5 @@ Hardware validation:
 - Whether Fedora image customization should use `livemedia-creator`,
   `osbuild`, or a simpler loopback image modifier for early work.
 - Whether to make the first Fedora image installable or development-only.
+- Whether to avoid live media entirely and instead build a normal ext4 root
+  image once the Arch path is understood.
