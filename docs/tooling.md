@@ -29,6 +29,12 @@ Build the kernel:
 make kernel
 ```
 
+Stage built kernel artifacts:
+
+```sh
+make kernel-install-artifacts
+```
+
 Extract firmware from a mounted Windows installation or recovery image:
 
 ```sh
@@ -57,6 +63,18 @@ Run a generic ARM64 QEMU smoke test:
 
 ```sh
 make qemu-smoke IMAGE=/path/to/aarch64-image.raw
+```
+
+Build the current Arch Linux ARM Surface Pro X image:
+
+```sh
+make arch-spx-image
+```
+
+Build and write it to a USB target:
+
+```sh
+sudo scripts/build-arch-spx-image.sh --write /dev/sdX
 ```
 
 Collect logs on the physical tablet:
@@ -99,7 +117,7 @@ the Surface Pro X.
 
 ## Current Limit
 
-The tools are now real entry points, but the Fedora and Ubuntu image flows still
-need the next implementation phase: kernel package specs, initramfs hooks, local
-package repositories, and image customization that installs the Surface Pro X
-kernel and boot files.
+The active tool path is Arch-first. Fedora and Ubuntu image flows still need the
+next implementation phase: kernel package specs, initramfs hooks, local package
+repositories, and image customization that installs the Surface Pro X kernel and
+boot files.
