@@ -1,47 +1,52 @@
 # Test Matrix
 
-## QEMU Tests
+## Image Tests
 
-| Test | Fedora | Ubuntu | Notes |
-| --- | --- | --- | --- |
-| Image boots to systemd | pending | pending | Generic ARM64 only |
-| SSH starts | pending | pending | Development images |
-| Kernel package installed | pending | pending | Package validation |
-| Initramfs exists | pending | pending | Boot validation |
-| EFI boot files present | pending | pending | `BOOTAA64.EFI` |
-| GRUB config present | pending | pending | Includes SPX entry |
-| Required kernel args present | pending | pending | `efi=novamap clk_ignore_unused` |
-| QCOM service units installed | pending | pending | Not hardware validated |
-| KDE packages installed | pending | pending | Smoke only |
-| SDDM enabled | pending | pending | Smoke only |
+| Test | Arch | Fedora | Ubuntu | Notes |
+| --- | --- | --- | --- | --- |
+| Build base image | pass | blocked | pending | Fedora blocked as active path; Ubuntu not started |
+| Install AArch64 GRUB | pass | pass | pending | Uses `grub-image-aarch64` |
+| Install local kernel image | pass | pass | pending | Current local kernel is `6.18.3+` |
+| Install local modules | pass | pass | pending | Arch modules staged under `/usr/lib/modules/6.18.3+` |
+| Install Surface Pro X DTB | pass | pass | pending | `sc8180x-surface-pro-x.dtb` |
+| Generate matching initramfs | pass | fail | pending | Fedora stock/live initramfs mismatched the hardware path |
+| Add diagnostic initramfs hooks | pass | na | pending | `spxdebug`, `spxudev` |
+| Add GRUB diagnostic menu | pass | pass | pending | Arch currently defaults to post-udev shell |
+| QEMU generic boot smoke | partial | partial | pending | QEMU does not emulate SPX hardware |
 
-## Hardware Tests
+## Hardware Boot Tests
 
-| Test | Fedora | Ubuntu | Notes |
-| --- | --- | --- | --- |
-| USB boot to GRUB | pending | pending | Real device |
-| Kernel starts | pending | pending | Real device |
-| Display stays visible | pending | pending | Known risk |
-| Root filesystem mounts | pending | pending | USB first |
-| Logs collected | pending | pending | Required |
-| Type Cover keyboard | pending | pending | SAM path |
-| Type Cover touchpad | pending | pending | SAM path |
-| Battery status | pending | pending | Surface driver |
-| Charger status | pending | pending | Surface driver |
-| Thermal sensors | pending | pending | Surface/QCOM |
-| NVMe detection | pending | pending | Do not write initially |
-| WiFi scan | pending | pending | Needs firmware/services |
-| Bluetooth controller | pending | pending | Needs firmware fixes |
-| Plasma login | pending | pending | Real usability |
-| GPU acceleration | pending | pending | Adreno/MSM |
-| Touch single-touch | pending | pending | SPI HID |
-| Touch multitouch | pending | pending | IPTSd |
-| Pen input | pending | pending | IPTSd |
-| Suspend/resume | pending | pending | Later milestone |
-| Audio | pending | pending | Later milestone |
-| Cameras | pending | pending | Later milestone |
-| LTE modem | pending | pending | Later milestone |
-| External display | pending | pending | Later milestone |
+| Test | Arch | Fedora | Ubuntu | Notes |
+| --- | --- | --- | --- | --- |
+| USB boot to GRUB | pass | pass | pending | Real device |
+| Kernel starts | pass | pass | pending | Arch DTB path prints Surface Pro X model |
+| DTB boot visible console | pass | partial | pending | Some DTB entries previously black-screened |
+| ACPI boot visible console | partial | partial | pending | ACPI hits GENI/I2C issues without mitigations |
+| I2C/GENI panic avoided | pass | fail | pending | Local mitigation plus DTB-first path |
+| Initramfs starts | pass | fail | pending | Arch reaches `/init` |
+| xHCI controller starts | pass | pass | pending | Seen in hardware logs |
+| USB hubs detected | pass | pass | pending | Seen in hardware logs |
+| UAS/usb-storage registered | pass | pass | pending | Seen in hardware logs |
+| USB root block device appears | fail | fail | pending | Active blocker |
+| Root filesystem mounts | fail | fail | pending | Waiting on USB root discovery |
+| Login shell reached | blocked | fail | pending | Blocked by root mount |
+| Logs collected from Linux | blocked | blocked | pending | Need mounted root or serial/net path |
+| Type Cover keyboard | blocked | blocked | pending | Later after boot |
+| Type Cover touchpad | blocked | blocked | pending | Later after boot |
+| Battery status | blocked | blocked | pending | Later after boot |
+| Charger status | blocked | blocked | pending | Later after boot |
+| Thermal sensors | blocked | blocked | pending | Later after boot |
+| NVMe detection | blocked | blocked | pending | Do not write internally yet |
+| WiFi scan | blocked | blocked | pending | Needs firmware/services after boot |
+| Bluetooth controller | blocked | blocked | pending | Needs firmware/services after boot |
+| Plasma login | blocked | blocked | pending | Desktop is not current milestone |
+| GPU acceleration | blocked | blocked | pending | Adreno/MSM later |
+| Touch and pen | blocked | blocked | pending | Later milestone |
+| Suspend/resume | blocked | blocked | pending | Later milestone |
+| Audio | blocked | blocked | pending | Later milestone |
+| Cameras | blocked | blocked | pending | Later milestone |
+| LTE modem | blocked | blocked | pending | Later milestone |
+| External display | blocked | blocked | pending | Later milestone |
 
 ## Result States
 
