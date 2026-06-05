@@ -35,7 +35,39 @@ Success criteria:
 - DTBs are produced and named predictably
 - build manifest records all source commits
 
-## Milestone 2: Firmware and Service Packaging
+Current status:
+
+- local `spx/v6.18` kernel builds
+- artifacts are staged under `build/artifacts/kernel`
+- current built release is `6.18.3+`
+- local I2C/GENI bring-up mitigation is being tested
+
+## Milestone 2: Arch USB Root Bring-Up
+
+Deliverables:
+
+- Arch Linux ARM GPT image
+- AArch64 GRUB from `grub-image-aarch64`
+- local kernel, modules, DTB, firmware, and matching initramfs
+- diagnostic GRUB menu
+- initramfs hooks for bounded udev and USB/storage diagnostics
+
+Success criteria:
+
+- Surface Pro X boots from USB to GRUB
+- DTB kernel path starts reliably
+- initramfs starts reliably
+- USB mass-storage root appears as a block device
+- ext4 root filesystem mounts
+- login shell is reached on USB root
+
+Current status:
+
+- GRUB, kernel, initramfs, xHCI, hubs, UAS, and usb-storage are observed
+- active blocker is USB root block-device discovery
+- `spxdebug` and `spxudev` hooks are active for the next hardware test
+
+## Milestone 3: Firmware and Service Packaging
 
 Deliverables:
 
@@ -50,7 +82,7 @@ Success criteria:
 - extracted firmware tree passes file validation
 - services install and enable in image builds
 
-## Milestone 3: Fedora KDE Image
+## Milestone 4: Fedora KDE Image
 
 Deliverables:
 
@@ -65,7 +97,12 @@ Success criteria:
 - image reaches systemd on Surface Pro X over USB
 - logs can be collected
 
-## Milestone 4: Ubuntu KDE Image
+Current status:
+
+- deferred until Arch USB root boot is solved
+- previous Fedora live tests failed in dracut/live-root and ACPI I2C paths
+
+## Milestone 5: Ubuntu KDE Image
 
 Deliverables:
 
@@ -80,7 +117,7 @@ Success criteria:
 - image reaches systemd on Surface Pro X over USB
 - logs can be collected
 
-## Milestone 5: Core Hardware Bring-Up
+## Milestone 6: Core Hardware Bring-Up
 
 Deliverables:
 
@@ -95,7 +132,7 @@ Success criteria:
 - tablet is usable from USB with network and input
 - NVMe install path is documented
 
-## Milestone 6: Desktop Usability
+## Milestone 7: Desktop Usability
 
 Deliverables:
 
@@ -109,7 +146,7 @@ Success criteria:
 - Plasma is usable on the tablet
 - known display handoff issues are documented or mitigated
 
-## Milestone 7: Advanced Hardware
+## Milestone 8: Advanced Hardware
 
 Deliverables:
 
