@@ -32,6 +32,8 @@ Pass criteria:
 - device enters GRUB
 - kernel starts
 - initramfs loads
+- USB host controllers initialize
+- USB storage block device appears
 - root filesystem mounts
 - console or display manager appears
 - logs can be collected
@@ -45,6 +47,26 @@ lsblk
 cat /proc/cmdline
 find /sys/firmware/efi -maxdepth 2 -type d
 ```
+
+Current Phase A status:
+
+- GRUB: pass
+- DTB kernel boot: pass
+- initramfs start: pass
+- xHCI/hub discovery: pass
+- UAS/usb-storage registration: pass
+- USB root block device: fail/current blocker
+- root filesystem mount: blocked
+
+Current diagnostic command set inside the Arch initramfs:
+
+```sh
+ls -l /dev/sd* /dev/disk/by-uuid /dev/disk/by-partuuid
+dmesg | grep -Ei 'usb|xhci|dwc3|uas|storage|scsi|sd[a-z]|root|partuuid' | tail -120
+```
+
+The current default GRUB entry is `Arch SPX - DTB post-udev diagnostic shell`.
+It is expected to stop before root mount so USB/storage state can be inspected.
 
 ## Phase B: Basic Platform
 
