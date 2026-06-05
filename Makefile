@@ -1,6 +1,7 @@
 .PHONY: help check-host docs-check fetch-upstreams kernel firmware validate-firmware \
 	grub boot-tree qemu-smoke hardware-logs fedora-packages ubuntu-packages \
-	fedora-image ubuntu-image qemu-iso-smoke container-shell
+	fedora-image ubuntu-image qemu-iso-smoke container-shell \
+	kernel-install-artifacts fedora-live-spx arch-spx-image qemu-iso-smoke-spx
 
 help:
 	@printf '%s\n' 'Surface Pro X Linux docs repo'
@@ -20,10 +21,11 @@ help:
 	@printf '%s\n' '  ubuntu-packages   Build starter Ubuntu toolkit DEB'
 	@printf '%s\n' '  fedora-image      Copy/customize Fedora ARM64 image; pass BASE_IMAGE=...'
 	@printf '%s\n' '  ubuntu-image      Copy/customize Ubuntu ARM64 image; pass BASE_IMAGE=...'
+	@printf '%s\n' '  arch-spx-image    Build Arch Linux ARM SPX image'
 	@printf '%s\n' '  container-shell   Open the Fedora toolchain container'
 
 docs-check:
-	@find . -name '*.md' -print | sort
+	@find README.md containers docs scripts tests -name '*.md' -print | sort
 
 check-host:
 	@scripts/check-host.sh
@@ -86,3 +88,28 @@ ubuntu-image:
 
 container-shell:
 	@scripts/container-shell.sh
+
+kernel-install-artifacts:
+	@scripts/install-kernel-artifacts.sh
+
+# Remaster a Fedora AArch64 live ISO to use the surface kernel.
+# Requires: ISO=/path/to/Fedora-*.aarch64.iso  (must be run as root)
+fedora-live-spx:
+	@test -n "$${ISO:-}" || { printf '%s\n' 'ISO=/path/to/Fedora-aarch64-live.iso is required'; exit 1; }
+	@sudo scripts/remaster-fedora-live.sh --iso "$${ISO}"
+
+arch-spx-image:
+	@if [ -n "$${OUT:-}" ] && [ -n "$${WRITE:-}" ]; then \
+		sudo scripts/build-arch-spx-image.sh --out "$${OUT}" --write "$${WRITE}"; \
+	elif [ -n "$${OUT:-}" ]; then \
+		sudo scripts/build-arch-spx-image.sh --out "$${OUT}"; \
+	elif [ -n "$${WRITE:-}" ]; then \
+		sudo scripts/build-arch-spx-image.sh --write "$${WRITE}"; \
+	else \
+		sudo scripts/build-arch-spx-image.sh; \
+	fi
+
+# QEMU smoke test of the remastered surface live ISO
+qemu-iso-smoke-spx:
+	@bash scripts/qemu-iso-smoke.sh \
+		--iso "$${ISO:-build/artifacts/images/fedora-spx-live.iso}"
