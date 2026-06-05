@@ -1,16 +1,40 @@
-# Surface Pro X Linux Enablement
+# Surface Pro X Linux Bring-Up
 
-Documentation and build-process planning for running Linux on the Microsoft
-Surface Pro X.
+Documentation, build tooling, and hardware-test notes for running Linux on the
+Microsoft Surface Pro X.
 
 The Surface Pro X is not part of the normal x86 Surface bring-up path. It is an
 AArch64 Qualcomm device, so the work has to combine a custom ARM64 kernel,
 device-tree boot, firmware extraction, Qualcomm userspace services, distro
 packaging, image generation, QEMU smoke testing, and physical-device validation.
 
+## Current Status
+
+Status as of 2026-06-05: this is now an Arch Linux ARM hardware bring-up
+project. Fedora and Ubuntu remain useful future distro targets, but Fedora live
+media is no longer the active first-boot path because its dracut/live-overlay
+stack made hardware failures hard to isolate.
+
+Current progress on the physical Surface Pro X:
+
+- AArch64 GRUB boots from USB.
+- The local linux-surface `spx/v6.18` kernel boots with the Surface Pro X DTB.
+- The prior ACPI `i2c_qcom_geni` kernel panic has been avoided with local
+  driver changes and by preferring DTB boot.
+- USB host and hub initialization now reaches xHCI, UAS, and usb-storage.
+- The current blocker is root-device discovery from USB: the kernel reaches the
+  initramfs, but the ext4 root partition is not reliably visible as `/dev/sd*`.
+- The active test image uses a custom Arch initramfs hook, `spxudev`, to bound
+  `udevadm settle` and print USB/storage diagnostics.
+
+See `docs/bringup-log.md` for the detailed test history and `docs/arch-spx-image.md`
+for the current image path.
+
 ## Goals
 
-- Build reproducible Fedora KDE and Ubuntu KDE images for Surface Pro X.
+- Build a reproducible Arch Linux ARM USB image for early Surface Pro X
+  hardware bring-up.
+- Preserve Fedora and Ubuntu packaging/image notes for later distro support.
 - Package the Surface Pro X kernel, modules, DTBs, initramfs hooks, firmware,
   and required Qualcomm services.
 - Keep QEMU tests for fast image and boot validation.
@@ -71,25 +95,25 @@ packaging, image generation, QEMU smoke testing, and physical-device validation.
     └── .gitkeep
 ```
 
-## First Milestone
+## Active Milestone
 
-The first milestone is not a fully working tablet install. It is a repeatable
-toolchain that can:
+The active milestone is not a fully working tablet install. It is a repeatable
+USB boot path that can:
 
 1. Build or fetch the current Surface Pro X kernel branch.
 2. Produce kernel modules and DTBs.
-3. Produce distro packages for Fedora and Ubuntu.
-4. Assemble bootable ARM64 images with KDE Plasma.
-5. Run QEMU smoke tests against those images.
-6. Produce a hardware test checklist for USB boot on a real Surface Pro X.
+3. Assemble an Arch Linux ARM USB image with local kernel artifacts.
+4. Boot through AArch64 GRUB on the physical Surface Pro X.
+5. Reach initramfs diagnostics with useful USB/storage logs.
+6. Mount the USB root filesystem and reach a login shell.
 
 ## Current Assumptions
 
-- Fedora is the first distro target because Fedora KDE publishes AArch64 KDE
-  images.
-- Ubuntu is the second distro target because Ubuntu publishes generic ARM64
-  desktop and server images, and KDE Plasma can be layered through packages.
-- Arch AArch64 remains the reference implementation, not the final target.
+- Arch Linux ARM is the first active test target because it gives us a plain
+  GPT/ext4 root filesystem and avoids Fedora live-media overlay complexity.
+- Fedora and Ubuntu are later distro targets once hardware boot is understood.
+- DTB boot is preferred over ACPI for now because the Qualcomm GENI/I2C topology
+  is more complete in the SC8180X device tree than in the exposed ACPI graph.
 - Secure Boot is disabled for early hardware bring-up.
 - Secure Boot support is a later milestone using shim, MOK, and signed kernel
   artifacts.
@@ -123,11 +147,12 @@ The repository includes first-pass tools for starting the work:
 ```sh
 make check-host
 make fetch-upstreams
-scripts/build-kernel.sh --prepare-only
 make kernel
+make kernel-install-artifacts
 SPX_WINDOWS_ROOT=/path/to/windows-root make firmware
 make grub
-make qemu-smoke IMAGE=/path/to/aarch64-image.raw
+make arch-spx-image
+sudo scripts/build-arch-spx-image.sh --write /dev/sdX
 ```
 
 See `docs/tooling.md` for the command guide.
